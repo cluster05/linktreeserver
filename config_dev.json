@@ -1,0 +1,17 @@
+{
+  "app": {
+    "env": "dev",
+    "jwtSecret": "linktree-jwt-secret",
+    "tokenExpireDuration": 3600,
+    "refreshTokenExpireDuration": 86400
+  },
+  "server": {
+    "runMode": "debug",
+    "port": "3000",
+    "readTimeout": 60,
+    "writeTimeout": 60
+  },
+  "database": {
+    "MySqlDNS": "root:root@tcp(localhost:3306)/linktree?parseTime=true"
+  }
+}
