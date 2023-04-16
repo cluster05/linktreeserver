@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	
+
 	"github.com/cluster05/linktree/api/config"
 	"github.com/cluster05/linktree/api/model"
 )
@@ -16,7 +16,7 @@ func generateToken(auth model.Auth) (string, error) {
 		Firstname: auth.Firstname,
 		Lastname:  auth.Lastname,
 		Email:     auth.Email,
-		AuthType:  auth.AuthType,
+		AuthMode:  auth.AuthMode,
 		IssuedAt:  time.Now(),
 		ExpiredAt: time.Now().Add(time.Duration(config.AppConfig.TokenExpireDuration) * time.Minute),
 	}

@@ -2,13 +2,13 @@ package model
 
 import "gorm.io/plugin/soft_delete"
 
-type AuthType string
+type AuthMode string
 
 var (
-	EmailAuthType    AuthType = "EMAIL"
-	GoogleAuthType   AuthType = "GOOGLE"
-	FacebookAuthType AuthType = "FACEBOOK"
-	TwitterAuthType  AuthType = "TWITTER"
+	EmailAuthMode    AuthMode = "EMAIL"
+	GoogleAuthMode   AuthMode = "GOOGLE"
+	FacebookAuthMode AuthMode = "FACEBOOK"
+	TwitterAuthMode  AuthMode = "TWITTER"
 )
 
 type Auth struct {
@@ -18,31 +18,31 @@ type Auth struct {
 	Lastname  string                `json:"lastname,omitempty" gorm:"column:lastname"`
 	Email     string                `json:"email,omitempty" gorm:"column:email"`
 	Password  string                `json:"password,omitempty" gorm:"column:password"`
-	AuthType  AuthType              `json:"authBy,omitempty" gorm:"column:authBy"`
+	AuthMode  AuthMode              `json:"authMode,omitempty" gorm:"column:authMode"`
 	CreatedAt int64                 `json:"createdAt,omitempty" gorm:"column:createdAt"`
 	UpdatedAt int64                 `json:"updatedAt,omitempty" gorm:"column:updatedAt"`
 	IsDeleted soft_delete.DeletedAt `json:"isDeleted" gorm:"column:isDeleted;softDelete:flag"`
 }
 
 type RegisterDTO struct {
-	Username  string `json:"username" binding:"required"`
-	Firstname string `json:"firstname" binding:"required"`
-	Lastname  string `json:"lastname" binding:"required"`
-	Email     string `json:"email" binding:"required,email"`
-	Password  string `json:"password" binding:"required"`
+	Username  string `json:"username" binding:"required,gte=2,max=10"`
+	Firstname string `json:"firstname" binding:"required,gte=2,max=25"`
+	Lastname  string `json:"lastname" binding:"required,gte=2,max=25"`
+	Email     string `json:"email" binding:"required,email,max=50"`
+	Password  string `json:"password" binding:"required,gte=8,max=20"`
 }
 
 type LoginDTO struct {
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required"`
+	Email    string `json:"email" binding:"required,email,max=50"`
+	Password string `json:"password" binding:"required,gte=8,max=20"`
 }
 
 type ForgotPasswordDTO struct {
-	Email string `json:"email" binding:"required,email"`
+	Email string `json:"email" binding:"required,email,max=50"`
 }
 
 type ChangePasswordDTO struct {
-	Email       string `json:"email" binding:"required,email"`
-	OldPassword string `json:"oldPassword" binding:"required"`
-	NewPassword string `json:"newPassword" binding:"required"`
+	Email       string `json:"email" binding:"required,email,max=50"`
+	OldPassword string `json:"oldPassword" binding:"required,gte=8,max=20"`
+	NewPassword string `json:"newPassword" binding:"required,gte=8,max=20"`
 }

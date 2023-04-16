@@ -15,15 +15,15 @@ type Link struct {
 
 type CreateLinkDTO struct {
 	Title    string `json:"title" binding:"required"`
-	URL      string `json:"url" binding:"required"`
-	ImageUrl string `json:"imageUrl" binding:"required"`
+	URL      string `json:"url" binding:"required,url"`
+	ImageUrl string `json:"imageUrl" binding:"required,url"`
 }
 
 type UpdateLinkDTO struct {
 	LinkId   string `json:"linkId" binding:"required"`
 	Title    string `json:"title" binding:"required"`
-	URL      string `json:"url" binding:"required"`
-	ImageUrl string `json:"imageUrl" binding:"required"`
+	URL      string `json:"url" binding:"required,url"`
+	ImageUrl string `json:"imageUrl" binding:"required,url"`
 }
 
 type DeleteLinkDTO struct {

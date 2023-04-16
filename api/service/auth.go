@@ -65,7 +65,7 @@ func (as authService) Register(registerDTO model.RegisterDTO) (string, error) {
 		Lastname:  registerDTO.Lastname,
 		Email:     registerDTO.Email,
 		Password:  hashPassword,
-		AuthType:  model.EmailAuthType,
+		AuthMode:  model.EmailAuthMode,
 	}
 
 	auth, err = as.authRepository.Register(auth)
