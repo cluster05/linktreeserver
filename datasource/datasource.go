@@ -3,13 +3,12 @@ package datasource
 import (
 	"fmt"
 
-	"github.com/jmoiron/sqlx"
-
 	"github.com/cluster05/linktree/api/config"
+	"gorm.io/gorm"
 )
 
 type DataSource struct {
-	MySqlDB *sqlx.DB
+	MySqlDB *gorm.DB
 }
 
 func Init() (*DataSource, error) {

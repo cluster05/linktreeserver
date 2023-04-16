@@ -1,14 +1,16 @@
 package model
 
+import "gorm.io/plugin/soft_delete"
+
 type Link struct {
-	AuthId    string `json:"authId" db:"authId"`
-	LinkId    string `json:"linkId" db:"linkId"`
-	Title     string `json:"title" db:"title"`
-	URL       string `json:"url" db:"url"`
-	ImageUrl  string `json:"imageUrl" db:"imageUrl"`
-	CreatedAt int64  `json:"createdAt" db:"createdAt"`
-	UpdatedAt int64  `json:"updatedAt" db:"updatedAt"`
-	IsDeleted bool   `json:"isDeleted" db:"isDeleted"`
+	AuthId    string                `json:"authId" gorm:"column:authId"`
+	LinkId    string                `json:"linkId" gorm:"column:linkId"`
+	Title     string                `json:"title" gorm:"column:title"`
+	URL       string                `json:"url" gorm:"column:url"`
+	ImageUrl  string                `json:"imageUrl" gorm:"column:imageUrl"`
+	CreatedAt int64                 `json:"createdAt" gorm:"column:createdAt"`
+	UpdatedAt int64                 `json:"updatedAt" gorm:"column:updatedAt"`
+	IsDeleted soft_delete.DeletedAt `json:"isDeleted" gorm:"column:isDeleted;softDelete:flag"`
 }
 
 type CreateLinkDTO struct {

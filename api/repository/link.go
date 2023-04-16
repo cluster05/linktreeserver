@@ -1,9 +1,9 @@
 package repository
 
 import (
+	"gorm.io/gorm"
+
 	"github.com/cluster05/linktree/api/model"
-	"github.com/jmoiron/sqlx"
-	"time"
 )
 
 type LinkRepository interface {
@@ -15,11 +15,11 @@ type LinkRepository interface {
 }
 
 type linkRepository struct {
-	MySqlDB *sqlx.DB
+	MySqlDB *gorm.DB
 }
 
 type LinkRepositoryConfig struct {
-	MySqlDB *sqlx.DB
+	MySqlDB *gorm.DB
 }
 
 func NewLinkRepository(config *LinkRepositoryConfig) LinkRepository {
@@ -29,69 +29,50 @@ func NewLinkRepository(config *LinkRepositoryConfig) LinkRepository {
 }
 
 func (repo *linkRepository) FindLink(authId string, linkId string) (model.Link, error) {
-	findLinkQuery := `SELECT linkId,title,url,imageUrl
-		FROM link
-		WHERE  authId=? AND linkId=? AND isDeleted=false;
-	`
 	link := model.Link{}
-	err := repo.MySqlDB.Get(&link, findLinkQuery, authId, linkId)
-	if err != nil {
-		return model.Link{}, err
+	result := repo.MySqlDB.Where("authId=? AND linkId=? AND isDeleted=false", authId, linkId).Find(&link)
+	if result.Error != nil {
+		return model.Link{}, result.Error
 	}
 
-	return link, err
-
+	return link, nil
 }
 
 func (repo *linkRepository) CreateLink(link model.Link) (model.Link, error) {
-	createLinkQuery := `INSERT INTO 
-		link(authId,linkId,title,url,imageUrl,createdAt,updatedAt,isDeleted) VALUES
-		(:authId,:linkId,:title,:url,:imageUrl,:createdAt,:updatedAt,:isDeleted);`
-
-	_, err := repo.MySqlDB.NamedExec(createLinkQuery, link)
-	if err != nil {
-		return model.Link{}, err
+	result := repo.MySqlDB.Create(&link)
+	if result.Error != nil {
+		return model.Link{}, result.Error
 	}
 	return link, nil
 }
 
 func (repo *linkRepository) ReadLink(userId string) ([]model.Link, error) {
-	readLinkQuery := `SELECT linkId,title,url,imageUrl
-		FROM link
-		WHERE authId=? AND isDeleted=false;
-		`
 	links := []model.Link{}
-	err := repo.MySqlDB.Select(&links, readLinkQuery, userId)
-	if err != nil {
-		return []model.Link{}, err
+	result := repo.MySqlDB.Where("authId=? AND isDeleted=false", userId).Find(&links)
+
+	if result.Error != nil {
+		return []model.Link{}, result.Error
 	}
 	return links, nil
 }
 
 func (repo *linkRepository) UpdateLink(link model.Link) (model.Link, error) {
-	updateLinkQuery := `UPDATE link 
-		SET title=? ,
-			url=?,
-			image=?,
-			updatedAt=?,
-		WHERE linkId=? isDeleted=false;
-		`
-	_, err := repo.MySqlDB.Exec(updateLinkQuery, link.Title, link.URL, link.ImageUrl, link.UpdatedAt, link.LinkId)
-	if err != nil {
-		return model.Link{}, err
+	result := repo.MySqlDB.Model(&model.Link{}).
+		Where("linkId=? AND isDeleted=false", link.LinkId).
+		Updates(map[string]interface{}{"title": link.Title, "url": link.URL, "imageUrl": link.ImageUrl})
+	if result.Error != nil {
+		return model.Link{}, result.Error
 	}
 	return link, nil
 }
 
 func (repo *linkRepository) DeleteLink(linkId string) error {
-	deleteLinkQuery := `UPDATE link
-	SET isDeleted=true,
-		updatedAt=?
-	WHERE linkId=? isDeleted=false;
-	`
-	_, err := repo.MySqlDB.Exec(deleteLinkQuery, time.Now().Unix(), linkId)
-	if err != nil {
-		return err
+	result := repo.MySqlDB.
+		Where("linkId=? AND isDeleted=false", linkId).
+		Delete(&model.Link{})
+
+	if result.Error != nil {
+		return result.Error
 	}
 	return nil
 }

@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/jmoiron/sqlx"
+	"gorm.io/gorm"
 
 	"github.com/cluster05/linktree/api/model"
 )
@@ -14,11 +14,11 @@ type AuthRepository interface {
 }
 
 type authRepository struct {
-	MySqlDB *sqlx.DB
+	MySqlDB *gorm.DB
 }
 
 type AuthRepositoryConfig struct {
-	MySqlDB *sqlx.DB
+	MySqlDB *gorm.DB
 }
 
 func NewAuthRepository(config *AuthRepositoryConfig) AuthRepository {
@@ -28,48 +28,39 @@ func NewAuthRepository(config *AuthRepositoryConfig) AuthRepository {
 }
 
 func (repo *authRepository) FetchAuthByUsername(username string) (model.Auth, error) {
-	findAuthByEmailQuery := `SELECT authId,username,firstname,lastname,email,password,authBy 
-		FROM auth
-		WHERE username=?  AND isDeleted=false;`
-
 	auth := model.Auth{}
-	err := repo.MySqlDB.Get(&auth, findAuthByEmailQuery, username)
-	if err != nil {
-		return model.Auth{}, err
+	result := repo.MySqlDB.Where("username=?  AND isDeleted=false", username).Find(&auth)
+	if result.Error != nil {
+		return model.Auth{}, result.Error
 	}
 
-	return auth, err
+	return auth, nil
 }
 
 func (repo *authRepository) FetchAuthByEmail(email string) (model.Auth, error) {
-	findAuthByEmailQuery := `SELECT authId,username,firstname,lastname,email,password,authBy 
-		FROM auth
-		WHERE email=?  AND isDeleted=false;`
-
 	auth := model.Auth{}
-	err := repo.MySqlDB.Get(&auth, findAuthByEmailQuery, email)
-	if err != nil {
-		return model.Auth{}, err
+	result := repo.MySqlDB.Where("email=? AND isDeleted=false", email).Find(&auth)
+	if result.Error != nil {
+		return model.Auth{}, result.Error
 	}
 
-	return auth, err
+	return auth, nil
 }
 
 func (repo *authRepository) Register(auth model.Auth) (model.Auth, error) {
-	registerUserQuery := `INSERT INTO 
-		auth(authId,username,firstname,lastname,email,password,authBy,createdAt,updatedAt,isDeleted) VALUES 
-		(:authId,:username,:firstname,:lastname,:email,:password,:authBy,:createdAt,:updatedAt,:isDeleted);`
-
-	_, err := repo.MySqlDB.NamedExec(registerUserQuery, auth)
-	if err != nil {
-		return model.Auth{}, err
+	result := repo.MySqlDB.Create(&auth)
+	if result.Error != nil {
+		return model.Auth{}, result.Error
 	}
 	return auth, nil
 }
 
 func (repo *authRepository) ChangePassword(newPassword string, authId string) error {
-	changePasswordQuery := `UPDATE auth SET password=? 
-		WHERE authId=? AND isDeleted=false;`
-	_, err := repo.MySqlDB.Exec(changePasswordQuery, newPassword, authId)
-	return err
+	result := repo.MySqlDB.Model(&model.Auth{}).
+		Where("authId=? AND isDeleted=false", authId).
+		Update("password", newPassword)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
 }

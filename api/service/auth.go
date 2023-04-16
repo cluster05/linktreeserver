@@ -3,9 +3,8 @@ package service
 import (
 	"database/sql"
 	"fmt"
-	"time"
 
-	"github.com/google/uuid"
+	"github.com/lithammer/shortuuid"
 
 	"github.com/cluster05/linktree/api/model"
 	"github.com/cluster05/linktree/api/repository"
@@ -59,16 +58,13 @@ func (as authService) Register(registerDTO model.RegisterDTO) (string, error) {
 	}
 
 	auth = model.Auth{
-		AuthId:    uuid.NewString(),
+		AuthId:    shortuuid.New(),
 		Username:  registerDTO.Username,
 		Firstname: registerDTO.Firstname,
 		Lastname:  registerDTO.Lastname,
 		Email:     registerDTO.Email,
 		Password:  hashPassword,
 		AuthType:  model.EmailAuthType,
-		CreatedAt: time.Now().Unix(),
-		UpdatedAt: time.Now().Unix(),
-		IsDeleted: false,
 	}
 
 	auth, err = as.authRepository.Register(auth)

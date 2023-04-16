@@ -1,5 +1,7 @@
 package model
 
+import "gorm.io/plugin/soft_delete"
+
 type AuthType string
 
 var (
@@ -10,16 +12,16 @@ var (
 )
 
 type Auth struct {
-	AuthId    string   `json:"authId,omitempty" db:"authId"`
-	Username  string   `json:"username,omitempty" db:"username"`
-	Firstname string   `json:"firstname,omitempty" db:"firstname"`
-	Lastname  string   `json:"lastname,omitempty" db:"lastname"`
-	Email     string   `json:"email,omitempty" db:"email"`
-	Password  string   `json:"password,omitempty" db:"password"`
-	AuthType  AuthType `json:"authBy,omitempty" db:"authBy"`
-	CreatedAt int64    `json:"createdAt,omitempty" db:"createdAt"`
-	UpdatedAt int64    `json:"updatedAt,omitempty" db:"updatedAt"`
-	IsDeleted bool     `json:"isDeleted" db:"isDeleted"`
+	AuthId    string                `json:"authId,omitempty" gorm:"column:authId"`
+	Username  string                `json:"username,omitempty" gorm:"column:username"`
+	Firstname string                `json:"firstname,omitempty" gorm:"column:firstname"`
+	Lastname  string                `json:"lastname,omitempty" gorm:"column:lastname"`
+	Email     string                `json:"email,omitempty" gorm:"column:email"`
+	Password  string                `json:"password,omitempty" gorm:"column:password"`
+	AuthType  AuthType              `json:"authBy,omitempty" gorm:"column:authBy"`
+	CreatedAt int64                 `json:"createdAt,omitempty" gorm:"column:createdAt"`
+	UpdatedAt int64                 `json:"updatedAt,omitempty" gorm:"column:updatedAt"`
+	IsDeleted soft_delete.DeletedAt `json:"isDeleted" gorm:"column:isDeleted;softDelete:flag"`
 }
 
 type RegisterDTO struct {

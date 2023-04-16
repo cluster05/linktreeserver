@@ -3,10 +3,12 @@ package service
 import (
 	"database/sql"
 	"fmt"
+	"time"
+
+	"github.com/lithammer/shortuuid"
+
 	"github.com/cluster05/linktree/api/model"
 	"github.com/cluster05/linktree/api/repository"
-	"github.com/google/uuid"
-	"time"
 )
 
 type LinkService interface {
@@ -37,14 +39,11 @@ func NewLinkService(config *LinkServiceConfig) LinkService {
 func (ls *linkService) CreateLink(user model.JWTPayload, createLinkDTO model.CreateLinkDTO) (model.Link, error) {
 
 	link := model.Link{
-		LinkId:    uuid.NewString(),
-		AuthId:    user.AuthId,
-		Title:     createLinkDTO.Title,
-		URL:       createLinkDTO.URL,
-		ImageUrl:  createLinkDTO.URL,
-		CreatedAt: time.Now().Unix(),
-		UpdatedAt: time.Now().Unix(),
-		IsDeleted: false,
+		LinkId:   shortuuid.New(),
+		AuthId:   user.AuthId,
+		Title:    createLinkDTO.Title,
+		URL:      createLinkDTO.URL,
+		ImageUrl: createLinkDTO.URL,
 	}
 
 	return ls.linkRepository.CreateLink(link)
@@ -57,17 +56,19 @@ func (ls *linkService) ReadLink(user model.JWTPayload) ([]model.Link, error) {
 
 func (ls *linkService) UpdateLink(user model.JWTPayload, updateLinkDTO model.UpdateLinkDTO) (model.Link, error) {
 
-	_, err := ls.linkRepository.FindLink(user.AuthId, updateLinkDTO.LinkId)
+	findLink, err := ls.linkRepository.FindLink(user.AuthId, updateLinkDTO.LinkId)
 	if err == sql.ErrNoRows {
 		return model.Link{}, errLinkNotFound
 	}
 
 	link := model.Link{
-		LinkId:   updateLinkDTO.LinkId,
-		AuthId:   user.AuthId,
-		Title:    updateLinkDTO.Title,
-		URL:      updateLinkDTO.URL,
-		ImageUrl: updateLinkDTO.URL,
+		LinkId:    updateLinkDTO.LinkId,
+		AuthId:    user.AuthId,
+		Title:     updateLinkDTO.Title,
+		URL:       updateLinkDTO.URL,
+		ImageUrl:  updateLinkDTO.URL,
+		CreatedAt: findLink.CreatedAt,
+		UpdatedAt: time.Now().Unix(),
 	}
 	return ls.linkRepository.UpdateLink(link)
 }
