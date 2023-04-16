@@ -1,11 +1,11 @@
 package service
 
 import (
-	"database/sql"
-	"fmt"
+	"errors"
 	"time"
 
 	"github.com/lithammer/shortuuid"
+	"gorm.io/gorm"
 
 	"github.com/cluster05/linktree/api/model"
 	"github.com/cluster05/linktree/api/repository"
@@ -25,10 +25,6 @@ type linkService struct {
 type LinkServiceConfig struct {
 	LinkRepository repository.LinkRepository
 }
-
-var (
-	errLinkNotFound = fmt.Errorf("link not found")
-)
 
 func NewLinkService(config *LinkServiceConfig) LinkService {
 	return &linkService{
@@ -57,8 +53,8 @@ func (ls *linkService) ReadLink(user model.JWTPayload) ([]model.Link, error) {
 func (ls *linkService) UpdateLink(user model.JWTPayload, updateLinkDTO model.UpdateLinkDTO) (model.Link, error) {
 
 	findLink, err := ls.linkRepository.FindLink(user.AuthId, updateLinkDTO.LinkId)
-	if err == sql.ErrNoRows {
-		return model.Link{}, errLinkNotFound
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return model.Link{}, gorm.ErrRecordNotFound
 	}
 
 	link := model.Link{
@@ -76,8 +72,8 @@ func (ls *linkService) UpdateLink(user model.JWTPayload, updateLinkDTO model.Upd
 func (ls *linkService) DeleteLink(user model.JWTPayload, deleteLinkDTO model.DeleteLinkDTO) error {
 
 	_, err := ls.linkRepository.FindLink(user.AuthId, deleteLinkDTO.LinkId)
-	if err == sql.ErrNoRows {
-		return errLinkNotFound
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return gorm.ErrRecordNotFound
 	}
 
 	return ls.linkRepository.DeleteLink(deleteLinkDTO.LinkId)

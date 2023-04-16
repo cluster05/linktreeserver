@@ -35,6 +35,10 @@ func (repo *linkRepository) FindLink(authId string, linkId string) (model.Link, 
 		return model.Link{}, result.Error
 	}
 
+	if result.RowsAffected == 0 {
+		return model.Link{}, gorm.ErrRecordNotFound
+	}
+
 	return link, nil
 }
 

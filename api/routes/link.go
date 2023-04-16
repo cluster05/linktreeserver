@@ -1,14 +1,15 @@
 package routes
 
 import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+
 	"github.com/cluster05/linktree/api/appresponse"
 	"github.com/cluster05/linktree/api/model"
 	"github.com/cluster05/linktree/api/query"
-	"github.com/cluster05/linktree/pkg/requesthandler"
-	"github.com/gin-gonic/gin"
-	"net/http"
-
 	"github.com/cluster05/linktree/api/service"
+	"github.com/cluster05/linktree/pkg/requesthandler"
 )
 
 type LinkRoute interface {

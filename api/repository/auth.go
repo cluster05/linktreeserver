@@ -34,6 +34,10 @@ func (repo *authRepository) FetchAuthByUsername(username string) (model.Auth, er
 		return model.Auth{}, result.Error
 	}
 
+	if result.RowsAffected == 0 {
+		return model.Auth{}, gorm.ErrRecordNotFound
+	}
+
 	return auth, nil
 }
 
@@ -42,6 +46,10 @@ func (repo *authRepository) FetchAuthByEmail(email string) (model.Auth, error) {
 	result := repo.MySqlDB.Where("email=? AND isDeleted=false", email).Find(&auth)
 	if result.Error != nil {
 		return model.Auth{}, result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return model.Auth{}, gorm.ErrRecordNotFound
 	}
 
 	return auth, nil

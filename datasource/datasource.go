@@ -3,8 +3,9 @@ package datasource
 import (
 	"fmt"
 
-	"github.com/cluster05/linktree/api/config"
 	"gorm.io/gorm"
+
+	"github.com/cluster05/linktree/api/config"
 )
 
 type DataSource struct {

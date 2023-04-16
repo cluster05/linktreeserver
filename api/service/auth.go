@@ -1,8 +1,9 @@
 package service
 
 import (
-	"database/sql"
+	"errors"
 	"fmt"
+	"gorm.io/gorm"
 
 	"github.com/lithammer/shortuuid"
 
@@ -42,13 +43,13 @@ func NewAuthService(config *AuthServiceConfig) AuthService {
 
 func (as authService) Register(registerDTO model.RegisterDTO) (string, error) {
 
-	auth, _ := as.authRepository.FetchAuthByEmail(registerDTO.Email)
-	if auth.Email != "" {
+	_, err := as.authRepository.FetchAuthByEmail(registerDTO.Email)
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		return "", errAccountAlreadyExists
 	}
 
-	auth, _ = as.authRepository.FetchAuthByUsername(registerDTO.Username)
-	if auth.Username != "" {
+	_, err = as.authRepository.FetchAuthByUsername(registerDTO.Username)
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		return "", errUsernameAlreadyExists
 	}
 
@@ -57,7 +58,7 @@ func (as authService) Register(registerDTO model.RegisterDTO) (string, error) {
 		return "", err
 	}
 
-	auth = model.Auth{
+	auth := model.Auth{
 		AuthId:    shortuuid.New(),
 		Username:  registerDTO.Username,
 		Firstname: registerDTO.Firstname,
@@ -83,7 +84,7 @@ func (as authService) Register(registerDTO model.RegisterDTO) (string, error) {
 func (as authService) Login(loginDTO model.LoginDTO) (string, error) {
 
 	auth, err := as.authRepository.FetchAuthByEmail(loginDTO.Email)
-	if err == sql.ErrNoRows {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return "", errorAccountNotExists
 	}
 
@@ -101,7 +102,7 @@ func (as authService) Login(loginDTO model.LoginDTO) (string, error) {
 
 func (as authService) ForgotPassword(forgotPasswordDTO model.ForgotPasswordDTO) (string, error) {
 	_, err := as.authRepository.FetchAuthByEmail(forgotPasswordDTO.Email)
-	if err == sql.ErrNoRows {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return "", errorAccountNotExists
 	}
 	// TODO : send email for change password
@@ -115,7 +116,7 @@ func (as authService) ChangePassword(changePasswordDTO model.ChangePasswordDTO) 
 	}
 
 	auth, err := as.authRepository.FetchAuthByEmail(changePasswordDTO.Email)
-	if err == sql.ErrNoRows {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return "", errorAccountNotExists
 	}
 
