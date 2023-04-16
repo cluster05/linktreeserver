@@ -57,7 +57,7 @@ func BindData(c *gin.Context, req interface{}) bool {
 			c.JSON(http.StatusOK, appresponse.NewBadRequestError(invalidArgs))
 			return false
 		}
-		c.JSON(http.StatusOK, appresponse.NewInternalError("internal server error"))
+		c.JSON(http.StatusOK, appresponse.NewInternalError(err.Error()))
 		return false
 	}
 
