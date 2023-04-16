@@ -31,13 +31,8 @@ func setupMySqlDB(sqlDNS string) (*sqlx.DB, error) {
 
 			sqlConnection = connection
 
-			//setupDBSchema()
 		}
 
 	})
 	return sqlConnection, sqlConnectionError
-}
-
-func setupDBSchema() {
-
 }

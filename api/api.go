@@ -1,10 +1,11 @@
 package api
 
 import (
+	"github.com/cluster05/linktree/api/appresponse"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	
+
 	"github.com/cluster05/linktree/api/middleware"
 	"github.com/cluster05/linktree/api/repository"
 	"github.com/cluster05/linktree/api/routes"
@@ -28,26 +29,37 @@ func InitRouter() (*gin.Engine, error) {
 	r := router.Group("/r", middleware.Auth)
 
 	o.POST("/health", func(context *gin.Context) {
-		context.JSON(http.StatusOK, gin.H{})
+		context.JSON(http.StatusOK, appresponse.NewSuccess("up"))
 	})
 
-	r.POST("/health", func(context *gin.Context) {
-		context.JSON(http.StatusOK, gin.H{})
-	})
-
-	authRoute := setupAuthService(datasource)
+	authRoute := setupAuthRoute(datasource)
+	linkRoute := setupLinkRoute(datasource)
 
 	o.POST("/login", authRoute.Login)
 	o.POST("/register", authRoute.Register)
 	o.POST("/forgotPassword", authRoute.ForgotPassword)
 
+	r.POST("/health", func(context *gin.Context) {
+		context.JSON(http.StatusOK, appresponse.NewSuccess("up"))
+	})
+
 	r.POST("/changePassword", authRoute.ChangePassword)
+	r.POST("/createLink", linkRoute.CreateLink)
+	r.POST("/readLink", linkRoute.ReadLink)
+	r.POST("/updateLink", linkRoute.UpdateLink)
+	r.POST("/deleteLink", linkRoute.DeleteLink)
 
 	return router, nil
 }
 
-func setupAuthService(datasource *datasource.DataSource) routes.AuthRoute {
+func setupAuthRoute(datasource *datasource.DataSource) routes.AuthRoute {
 	authRepository := repository.NewAuthRepository(&repository.AuthRepositoryConfig{MySqlDB: datasource.MySqlDB})
 	authService := service.NewAuthService(&service.AuthServiceConfig{AuthRepository: authRepository})
 	return routes.NewAuthRoute(&routes.AuthRouteConfig{AuthService: authService})
+}
+
+func setupLinkRoute(datasource *datasource.DataSource) routes.LinkRoute {
+	linkRepository := repository.NewLinkRepository(&repository.LinkRepositoryConfig{MySqlDB: datasource.MySqlDB})
+	linkService := service.NewLinkService(&service.LinkServiceConfig{LinkRepository: linkRepository})
+	return routes.NewLinkRoute(&routes.LinkRouteConfig{LinkService: linkService})
 }

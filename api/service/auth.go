@@ -53,7 +53,7 @@ func (as authService) Register(registerDTO model.RegisterDTO) (string, error) {
 		return "", errUsernameAlreadyExists
 	}
 
-	hashPassword, err := hash.HashPassword(registerDTO.Password)
+	hashPassword, err := hash.CreatePasswordHash(registerDTO.Password)
 	if err != nil {
 		return "", err
 	}
@@ -127,7 +127,7 @@ func (as authService) ChangePassword(changePasswordDTO model.ChangePasswordDTO) 
 		return "", errorInvalidCredentials
 	}
 
-	hashPassword, err := hash.HashPassword(changePasswordDTO.NewPassword)
+	hashPassword, err := hash.CreatePasswordHash(changePasswordDTO.NewPassword)
 	if err != nil {
 		return "", err
 	}

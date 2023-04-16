@@ -8,7 +8,7 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	
+
 	"github.com/cluster05/linktree/api/appresponse"
 	"github.com/cluster05/linktree/api/config"
 	"github.com/cluster05/linktree/api/model"
@@ -34,7 +34,7 @@ func Auth(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusOK, appresponse.NewInternalError(err.Error()))
 	}
-	c.Header("user", string(user))
+	c.Request.Header.Add("user", string(user))
 	c.Next()
 }
 
