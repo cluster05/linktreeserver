@@ -10,7 +10,7 @@ type Link struct {
 	ImageUrl  string                `json:"imageUrl" gorm:"column:imageUrl"`
 	CreatedAt int64                 `json:"createdAt" gorm:"column:createdAt"`
 	UpdatedAt int64                 `json:"updatedAt" gorm:"column:updatedAt"`
-	IsDeleted soft_delete.DeletedAt `json:"isDeleted" gorm:"column:isDeleted;softDelete:flag"`
+	IsDeleted soft_delete.DeletedAt `json:"isDeleted" gorm:"column:isDeleted;softDelete:flag" swaggerignore:"true"`
 }
 
 type CreateLinkDTO struct {

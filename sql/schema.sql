@@ -1,6 +1,6 @@
-create table if not exists linktree.auth
+create table if not exists linktree.auths
 (
-    authId    varchar(20)  not null
+    authId    varchar(25)  not null
     primary key,
     username  varchar(10)  not null,
     firstname varchar(25)  not null,
@@ -15,8 +15,8 @@ create table if not exists linktree.auth
 
 create table if not exists linktree.links
 (
-    authId    varchar(20)  not null,
-    linkId    varchar(20)  not null
+    authId    varchar(25)  not null,
+    linkId    varchar(25)  not null
     primary key,
     title     varchar(40)  not null,
     url       varchar(255) not null,
@@ -25,14 +25,14 @@ create table if not exists linktree.links
     updatedAt int          not null,
     isDeleted int          not null,
     constraint links_auth_fk
-    foreign key (authId) references linktree.auth (authId)
+    foreign key (authId) references linktree.auths (authId)
     );
 
 create table if not exists linktree.analytics
 (
-    analyticsId   varchar(20) not null
+    analyticsId   varchar(25) not null
     primary key,
-    linkId        varchar(20) not null,
+    linkId        varchar(25) not null,
     continentCode varchar(5)  not null,
     countryCode   varchar(5)  not null,
     regionCode    varchar(5)  not null,
@@ -50,19 +50,19 @@ create table if not exists linktree.analytics
 
 create table if not exists linktree.payments
 (
-    paymentId varchar(20) not null
+    paymentId varchar(25) not null
     primary key,
-    authId    varchar(20) not null,
+    authId    varchar(25) not null,
     constraint payments_auth_fk
-    foreign key (authId) references linktree.auth (authId)
+    foreign key (authId) references linktree.auths (authId)
     );
 
 create table if not exists linktree.plans
 (
-    planId           varchar(20) not null
+    planId           varchar(25) not null
     primary key,
-    authId           varchar(20) not null,
-    paymentId        varchar(20) not null,
+    authId           varchar(25) not null,
+    paymentId        varchar(25) not null,
     planType         varchar(10) not null,
     start            int         not null,
     end              int         not null,
@@ -71,7 +71,7 @@ create table if not exists linktree.plans
     updatedAt        int         not null,
     activeStatus     tinyint(1)  not null,
     constraint plans_auth_fk
-    foreign key (authId) references linktree.auth (authId),
+    foreign key (authId) references linktree.auths (authId),
     constraint plans_payment_fk
     foreign key (paymentId) references linktree.payments (paymentId)
     );

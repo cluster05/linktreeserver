@@ -8,113 +8,90 @@ import (
 
 type Type string
 
-type Success struct {
-	ResponseCode uint        `json:"responseCode"`
-	Message      Type        `json:"message,omitempty"`
-	Data         interface{} `json:"data,omitempty"`
-	HttpCode     int         `json:"httpCode,omitempty"`
+// Response model info
+//	@Description	Response is common model for any response
+type Response struct {
+	// ResponseCode : 1000 for success , 4000 for error
+	ResponseCode uint `json:"responseCode" `
+	// Data : Data of the response change according to response coming
+	Data interface{} `json:"data,omitempty"`
+	// HttpCode : HttpCode are the common http code that provided with Response
+	HttpCode int `json:"httpCode,omitempty"`
 }
-
-type Error struct {
-	ResponseCode uint        `json:"responseCode"`
-	Message      Type        `json:"message,omitempty"`
-	Error        interface{} `json:"error,omitempty"`
-	HttpCode     int         `json:"httpCode,omitempty"`
-}
-
-const (
-	Authorization        Type = "AUTHORIZATION"
-	BadRequest           Type = "BAD_REQUEST"
-	Conflict             Type = "CONFLICT"
-	Internal             Type = "INTERNAL"
-	NotFound             Type = "NOT_FOUND"
-	PayloadTooLarge      Type = "PAYLOAD_TOO_LARGE"
-	ServiceUnavailable   Type = "SERVICE_UNAVAILABLE"
-	UnsupportedMediaType Type = "UNSUPPORTED_MEDIA_TYPE"
-)
 
 const (
 	ErrorCode   = uint(4000)
 	SuccessCode = uint(1000)
 )
 
-func NewAuthorizationError(reason interface{}) *Error {
-	return &Error{
+func NewAuthorizationError(reason interface{}) *Response {
+	return &Response{
 		ResponseCode: ErrorCode,
-		Message:      Authorization,
-		Error:        reason,
+		Data:         reason,
 		HttpCode:     http.StatusUnauthorized,
 	}
 }
 
-func NewBadRequestError(reason interface{}) *Error {
-	return &Error{
+func NewBadRequestError(reason interface{}) *Response {
+	return &Response{
 		ResponseCode: ErrorCode,
-		Message:      BadRequest,
-		Error:        reason,
+		Data:         reason,
 		HttpCode:     http.StatusBadRequest,
 	}
 }
 
-func NewConflictError(message interface{}) *Error {
-	return &Error{
+func NewConflictError(message interface{}) *Response {
+	return &Response{
 		ResponseCode: ErrorCode,
-		Message:      Conflict,
-		Error:        message,
+		Data:         message,
 		HttpCode:     http.StatusConflict,
 	}
 }
 
-func NewInternalError(msg ...string) *Error {
+func NewInternalError(msg ...string) *Response {
 	message := strings.Join(msg, " ")
-	return &Error{
+	return &Response{
 		ResponseCode: ErrorCode,
-		Message:      Internal,
-		Error:        message,
+		Data:         message,
 		HttpCode:     http.StatusInternalServerError,
 	}
 }
 
-func NewNotFoundError(message string) *Error {
-	return &Error{
+func NewNotFoundError(message string) *Response {
+	return &Response{
 		ResponseCode: ErrorCode,
-		Message:      NotFound,
-		Error:        message,
+		Data:         message,
 		HttpCode:     http.StatusNotFound,
 	}
 }
 
-func NewPayloadTooLargeError(maxBodySize int64, contentLength int64) *Error {
-	return &Error{
+func NewPayloadTooLargeError(maxBodySize int64, contentLength int64) *Response {
+	return &Response{
 		ResponseCode: ErrorCode,
-		Message:      PayloadTooLarge,
-		Error:        fmt.Sprintf("Max payload size of %v exceeded. Actual payload size: %v", maxBodySize, contentLength),
+		Data:         fmt.Sprintf("Max payload size of %v exceeded. Actual payload size: %v", maxBodySize, contentLength),
 		HttpCode:     http.StatusRequestEntityTooLarge,
 	}
 }
 
-func NewServiceUnavailableError() *Error {
-	return &Error{
+func NewServiceUnavailableError() *Response {
+	return &Response{
 		ResponseCode: ErrorCode,
-		Message:      ServiceUnavailable,
-		Error:        "Service unavailable or timed out",
+		Data:         "Service unavailable or timed out",
 		HttpCode:     http.StatusServiceUnavailable,
 	}
 }
 
-func NewUnsupportedMediaTypeError(reason interface{}) *Error {
-	return &Error{
+func NewUnsupportedMediaTypeError(reason interface{}) *Response {
+	return &Response{
 		ResponseCode: ErrorCode,
-		Message:      UnsupportedMediaType,
-		Error:        reason,
+		Data:         reason,
 		HttpCode:     http.StatusUnsupportedMediaType,
 	}
 }
 
-func NewSuccess(data interface{}) *Success {
-	return &Success{
+func NewSuccess(data interface{}) *Response {
+	return &Response{
 		ResponseCode: SuccessCode,
-		Message:      "OK",
 		Data:         data,
 		HttpCode:     http.StatusOK,
 	}

@@ -1,12 +1,14 @@
 package api
 
 import (
-	"github.com/cluster05/linktree/pkg/customevalidator"
-	"github.com/gin-gonic/gin/binding"
-	"github.com/go-playground/validator/v10"
 	"net/http"
 
+	docs "github.com/cluster05/linktree/docs"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	"github.com/go-playground/validator/v10"
+	swaggerfiles "github.com/swaggo/files"
+	ginswagger "github.com/swaggo/gin-swagger"
 
 	"github.com/cluster05/linktree/api/appresponse"
 	"github.com/cluster05/linktree/api/middleware"
@@ -14,6 +16,7 @@ import (
 	"github.com/cluster05/linktree/api/routes"
 	"github.com/cluster05/linktree/api/service"
 	"github.com/cluster05/linktree/datasource"
+	"github.com/cluster05/linktree/pkg/customevalidator"
 )
 
 func InitRouter() (*gin.Engine, error) {
@@ -35,6 +38,7 @@ func InitRouter() (*gin.Engine, error) {
 	}
 
 	o := router.Group("/o")
+
 	r := router.Group("/r", middleware.Auth)
 
 	o.POST("/health", func(context *gin.Context) {
@@ -61,11 +65,14 @@ func InitRouter() (*gin.Engine, error) {
 	r.POST("/updateLink", linkRoute.UpdateLink)
 	r.POST("/deleteLink", linkRoute.DeleteLink)
 
-	r.POST("/createAnalytics", analyticsRoute.CreateAnalytics)
+	o.POST("/createAnalytics", analyticsRoute.CreateAnalytics)
 	r.POST("/readAnalytics", analyticsRoute.ReadAnalytics)
 
 	r.POST("/createPlan", planRoute.CreatePlan)
 	r.POST("/readPlan", planRoute.ReadPlan)
+
+	docs.SwaggerInfo.BasePath = ""
+	router.GET("/docs/*any", ginswagger.WrapHandler(swaggerfiles.Handler))
 
 	return router, nil
 }

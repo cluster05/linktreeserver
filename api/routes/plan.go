@@ -31,6 +31,18 @@ func NewPlanRoute(config *PlanRouteConfig) PlanRoute {
 	}
 }
 
+// CreatePlan		 godoc
+//
+//	@Summary		Create new plan in linktree
+//	@Description	Create new plan in linktree
+//	@Tags			Plan
+//	@Accept			application/json
+//	@Produce		application/json
+//	@Param			Authorization	header	string	false	"Bearer token"
+//	@Security		BearerAuth
+//	@Param			request	body		model.CreatePlanDTO						true	"CreatePlan request"
+//	@Success		200		{object}	appresponse.Response{data=model.Plan}	"Success response"
+//	@Router			/r/createPlan [post]
 func (pr *planRoute) CreatePlan(c *gin.Context) {
 
 	var createPlanDTO model.CreatePlanDTO
@@ -48,6 +60,17 @@ func (pr *planRoute) CreatePlan(c *gin.Context) {
 	c.JSON(http.StatusOK, appresponse.NewSuccess(result))
 }
 
+// ReadPlan		 godoc
+//
+//	@Summary		Read plan in linktree
+//	@Description	Read plan in linktree
+//	@Tags			Plan
+//	@Accept			application/json
+//	@Produce		application/json
+//	@Param			Authorization	header	string	false	"Bearer token"
+//	@Security		BearerAuth
+//	@Success		200	{object}	appresponse.Response{data=[]model.Plan}	"Success response"
+//	@Router			/r/readPlan [post]
 func (pr *planRoute) ReadPlan(c *gin.Context) {
 	user := query.User(c)
 

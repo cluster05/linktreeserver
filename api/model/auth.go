@@ -21,7 +21,7 @@ type Auth struct {
 	AuthMode  AuthMode              `json:"authMode,omitempty" gorm:"column:authMode"`
 	CreatedAt int64                 `json:"createdAt,omitempty" gorm:"column:createdAt"`
 	UpdatedAt int64                 `json:"updatedAt,omitempty" gorm:"column:updatedAt"`
-	IsDeleted soft_delete.DeletedAt `json:"isDeleted" gorm:"column:isDeleted;softDelete:flag"`
+	IsDeleted soft_delete.DeletedAt `json:"isDeleted" gorm:"column:isDeleted;softDelete:flag" swaggerignore:"true"`
 }
 
 type RegisterDTO struct {
