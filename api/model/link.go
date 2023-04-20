@@ -10,20 +10,20 @@ type Link struct {
 	ImageUrl  string                `json:"imageUrl" gorm:"column:imageUrl"`
 	CreatedAt int64                 `json:"createdAt" gorm:"column:createdAt"`
 	UpdatedAt int64                 `json:"updatedAt" gorm:"column:updatedAt"`
-	IsDeleted soft_delete.DeletedAt `json:"isDeleted" gorm:"column:isDeleted;softDelete:flag"`
+	IsDeleted soft_delete.DeletedAt `json:"isDeleted" gorm:"column:isDeleted;softDelete:flag" swaggerignore:"true"`
 }
 
 type CreateLinkDTO struct {
 	Title    string `json:"title" binding:"required"`
-	URL      string `json:"url" binding:"required"`
-	ImageUrl string `json:"imageUrl" binding:"required"`
+	URL      string `json:"url" binding:"required,url"`
+	ImageUrl string `json:"imageUrl" binding:"required,url"`
 }
 
 type UpdateLinkDTO struct {
 	LinkId   string `json:"linkId" binding:"required"`
 	Title    string `json:"title" binding:"required"`
-	URL      string `json:"url" binding:"required"`
-	ImageUrl string `json:"imageUrl" binding:"required"`
+	URL      string `json:"url" binding:"required,url"`
+	ImageUrl string `json:"imageUrl" binding:"required,url"`
 }
 
 type DeleteLinkDTO struct {

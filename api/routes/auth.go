@@ -32,6 +32,16 @@ func NewAuthRoute(config *AuthRouteConfig) AuthRoute {
 	}
 }
 
+// Login		 godoc
+//
+//	@Summary		Login in linktree
+//	@Description	Login in linktree
+//	@Tags			Authentication
+//	@Accept			application/json
+//	@Produce		application/json
+//	@Param			request	body		model.LoginDTO						true	"Login request"
+//	@Success		200		{object}	appresponse.Response{data=string}	"Success response"
+//	@Router			/o/login [post]
 func (ar *authRoute) Login(c *gin.Context) {
 
 	var loginDTO model.LoginDTO
@@ -48,6 +58,16 @@ func (ar *authRoute) Login(c *gin.Context) {
 	c.JSON(http.StatusOK, appresponse.NewSuccess(token))
 }
 
+// Register		 godoc
+//
+//	@Summary		Create new account in linktree
+//	@Description	Create new account in linktree
+//	@Tags			Authentication
+//	@Accept			application/json
+//	@Produce		application/json
+//	@Param			request	body		model.RegisterDTO					true	"Create user request"
+//	@Success		200		{object}	appresponse.Response{data=string}	"Success response"
+//	@Router			/o/register [post]
 func (ar *authRoute) Register(c *gin.Context) {
 
 	var registerDTO model.RegisterDTO
@@ -64,6 +84,16 @@ func (ar *authRoute) Register(c *gin.Context) {
 	c.JSON(http.StatusOK, appresponse.NewSuccess(token))
 }
 
+// ForgotPassword	godoc
+//
+//	@Summary		ForgotPassword of linktree
+//	@Description	ForgotPassword of linktree
+//	@Tags			Authentication
+//	@Accept			application/json
+//	@Produce		application/json
+//	@Param			request	body		model.ForgotPasswordDTO				true	"Forgot user request"
+//	@Success		200		{object}	appresponse.Response{data=string}	"Success response"
+//	@Router			/o/forgotPassword [post]
 func (ar *authRoute) ForgotPassword(c *gin.Context) {
 
 	var forgotPasswordDTO model.ForgotPasswordDTO
@@ -81,6 +111,18 @@ func (ar *authRoute) ForgotPassword(c *gin.Context) {
 
 }
 
+// ChangePassword	godoc
+//
+//	@Summary		ChangePassword of linktree
+//	@Description	ChangePassword of linktree
+//	@Tags			Authentication
+//	@Accept			application/json
+//	@Produce		application/json
+//	@Param			Authorization	header	string	false	"Bearer token"
+//	@Security		BearerAuth
+//	@Param			request	body		model.ChangePasswordDTO				true	"Change user request"
+//	@Success		200		{object}	appresponse.Response{data=string}	"Success response"
+//	@Router			/r/changePassword [post]
 func (ar *authRoute) ChangePassword(c *gin.Context) {
 	var changePasswordDTO model.ChangePasswordDTO
 	if valid := requesthandler.BindData(c, &changePasswordDTO); !valid {

@@ -10,6 +10,7 @@ type configuration struct {
 	app      `json:"app"`
 	server   `json:"server"`
 	database `json:"database"`
+	apiKey   `json:"apiKey"`
 }
 
 type app struct {
@@ -30,10 +31,15 @@ type database struct {
 	MySqlDNS string `json:"MySqlDNS"`
 }
 
+type apiKey struct {
+	ApiIp string `json:"apiIp"`
+}
+
 var (
 	AppConfig      app
 	ServerConfig   server
 	DatabaseConfig database
+	ApiKeyConfig   apiKey
 )
 
 func Setup(filename string) error {
@@ -53,6 +59,7 @@ func Setup(filename string) error {
 	AppConfig = config.app
 	ServerConfig = config.server
 	DatabaseConfig = config.database
+	ApiKeyConfig = config.apiKey
 
 	return nil
 }

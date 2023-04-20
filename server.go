@@ -13,6 +13,19 @@ import (
 	"github.com/cluster05/linktree/api/config"
 )
 
+//	@title			linktree documentation API
+//	@version		1.0.0
+//	@description	linktree is platform of the new generation to extend their reach to new world with single link.
+
+//	@host		localhost:3000
+//	@BasePath	/
+
+// @accept						json
+// @produce					json
+//
+// @securityDefinitions.apikey	BearerAuth
+// @in							header
+// @name						Authorization
 func main() {
 
 	if err := run(); err != nil {

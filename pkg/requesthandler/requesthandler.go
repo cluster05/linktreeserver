@@ -2,6 +2,7 @@ package requesthandler
 
 import (
 	"fmt"
+	"github.com/cluster05/linktree/pkg/customevalidator"
 	"net/http"
 	"strings"
 
@@ -18,6 +19,14 @@ type InvalidArgument struct {
 	Param string      `json:"param"`
 }
 
+func mapToString(m map[string]struct{}) string {
+	strarray := []string{}
+	for key := range m {
+		strarray = append(strarray, key)
+	}
+	return strings.Join(strarray, ",")
+}
+
 func jsonKeyBuilder(key string) string {
 	return strings.ToLower(key[:1]) + key[1:]
 }
@@ -27,7 +36,23 @@ func messageForTag(argument InvalidArgument) string {
 	case "required":
 		return argument.Field + " is required field"
 	case "email":
-		return argument.Field + " is not valid"
+		return argument.Field + " is not valid email"
+	case "min":
+		return argument.Field + " must contain greater than " + argument.Param + " letters"
+	case "gte":
+		return argument.Field + " must contain greater than " + argument.Param + " letters"
+	case "max":
+		return argument.Field + " must contain less than" + argument.Param + " letters"
+	case "lte":
+		return argument.Field + " must contain less than" + argument.Param + " letters"
+	case "url":
+		return argument.Field + " must be url"
+	case "plantype":
+		return argument.Field + " must be among " + mapToString(customevalidator.GetPlanType())
+	case "useragent":
+		return argument.Field + " must be among " + mapToString(customevalidator.GetUserAgents())
+	case "subscriptiontype":
+		return argument.Field + " must be among " + mapToString(customevalidator.GetSubscriptionType())
 	default:
 		return "invalid tag"
 	}

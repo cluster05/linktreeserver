@@ -11,7 +11,7 @@ type JWTPayload struct {
 	Firstname string    `json:"firstname,omitempty"`
 	Lastname  string    `json:"lastname,omitempty"`
 	Email     string    `json:"email,omitempty"`
-	AuthType  AuthType  `json:"authBy,omitempty"`
+	AuthMode  AuthMode  `json:"authMode,omitempty"`
 	IssuedAt  time.Time `json:"issuedAt"`
 	ExpiredAt time.Time `json:"expiredAt"`
 }
