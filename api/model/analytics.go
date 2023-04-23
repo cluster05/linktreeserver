@@ -1,5 +1,10 @@
 package model
 
+import (
+	"github.com/lithammer/shortuuid"
+	"gorm.io/gorm"
+)
+
 type UserAgent string
 
 var (
@@ -13,19 +18,24 @@ var (
 )
 
 type Analytics struct {
-	AnalyticsId   string    `json:"analyticsId" gorm:"analyticsId" `
-	LinkId        string    `json:"linkId" gorm:"linkId"`
-	ContinentCode string    `json:"continentCode" gorm:"continentCode"`
-	CountryCode   string    `json:"countryCode" gorm:"countryCode"`
-	RegionCode    string    `json:"regionCode" gorm:"regionCode"`
-	City          string    `json:"city" gorm:"city"`
-	Pincode       string    `json:"pincode" gorm:"pincode"`
-	Latitude      string    `json:"latitude" gorm:"latitude"`
-	Longitude     string    `json:"longitude" gorm:"longitude"`
-	UserAgent     UserAgent `json:"userAgent" gorm:"userAgent"`
-	OS            string    `json:"os" gorm:"os"`
+	AnalyticsId   string    `json:"analyticsId" gorm:"column:analyticsId" `
+	LinkId        string    `json:"linkId" gorm:"column:linkId"`
+	ContinentCode string    `json:"continentCode" gorm:"column:continentCode"`
+	CountryCode   string    `json:"countryCode" gorm:"column:countryCode"`
+	RegionCode    string    `json:"regionCode" gorm:"column:regionCode"`
+	City          string    `json:"city" gorm:"column:city"`
+	Pincode       string    `json:"pincode" gorm:"column:pincode"`
+	Latitude      string    `json:"latitude" gorm:"column:latitude"`
+	Longitude     string    `json:"longitude" gorm:"column:longitude"`
+	UserAgent     UserAgent `json:"userAgent" gorm:"column:userAgent"`
+	OS            string    `json:"os" gorm:"column:os"`
 	CreatedAt     int64     `json:"createdAt" gorm:"column:createdAt"`
 	UpdatedAt     int64     `json:"updatedAt" gorm:"column:updatedAt"`
+}
+
+func (analytics *Analytics) BeforeCreate(tx *gorm.DB) error {
+	analytics.AnalyticsId = shortuuid.New()
+	return nil
 }
 
 type CreateAnalyticsDTO struct {

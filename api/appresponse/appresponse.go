@@ -8,21 +8,15 @@ import (
 
 type Type string
 
-// Response model info
-//
-//	@Description	Response is common model for any response
 type Response struct {
-	// ResponseCode : 1000 for success , 4000 for error
-	ResponseCode uint `json:"responseCode" `
-	// Data : Data of the response change according to response coming
-	Data interface{} `json:"data,omitempty"`
-	// HttpCode : HttpCode are the common http code that provided with Response
-	HttpCode int `json:"httpCode,omitempty"`
+	ResponseCode int         `json:"responseCode" `
+	Data         interface{} `json:"data,omitempty"`
+	HttpCode     int         `json:"httpCode,omitempty"`
 }
 
 const (
-	ErrorCode   = uint(4000)
-	SuccessCode = uint(1000)
+	ErrorCode   = 4000
+	SuccessCode = 1000
 )
 
 func NewAuthorizationError(reason interface{}) *Response {

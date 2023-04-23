@@ -14,7 +14,7 @@ type DataSource struct {
 
 func Init() (*DataSource, error) {
 
-	mySqlDB, err := setupMySqlDB(config.DatabaseConfig.MySqlDNS)
+	mySqlDB, err := setupMySQLDB(config.DatabaseConfig.MySqlDSN)
 	if err != nil {
 		return nil, fmt.Errorf("error opening mysqldb %w", err)
 	}

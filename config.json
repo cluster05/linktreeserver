@@ -12,7 +12,7 @@
     "writeTimeout": 60
   },
   "database": {
-    "MySqlDSN": "root:root@tcp(localhost:3306)/linktree?parseTime=true"
+    "mySqlDSN": "root:root@tcp(localhost:3306)/linktree?parseTime=true"
   },
   "apiKey": {
     "apiIP": "6ceef074-1f9a-434d-a74b-10a8524be891"

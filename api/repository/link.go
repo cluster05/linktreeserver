@@ -63,9 +63,12 @@ func (repo *linkRepository) ReadLink(userId string) ([]model.Link, error) {
 func (repo *linkRepository) UpdateLink(link model.Link) (model.Link, error) {
 	result := repo.MySqlDB.Model(&model.Link{}).
 		Where("linkId=? AND isDeleted=false", link.LinkId).
-		Updates(map[string]interface{}{"title": link.Title, "url": link.URL, "imageUrl": link.ImageUrl})
+		Updates(map[string]interface{}{"title": link.Title, "url": link.URL, "ImageURL": link.ImageURL})
 	if result.Error != nil {
 		return model.Link{}, result.Error
+	}
+	if result.RowsAffected == 0 {
+		return model.Link{}, gorm.ErrRecordNotFound
 	}
 	return link, nil
 }
@@ -75,6 +78,9 @@ func (repo *linkRepository) DeleteLink(linkId string) error {
 		Where("linkId=? AND isDeleted=false", linkId).
 		Delete(&model.Link{})
 
+	if result.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
 	if result.Error != nil {
 		return result.Error
 	}

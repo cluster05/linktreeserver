@@ -9,7 +9,7 @@ import (
 	"github.com/cluster05/linktree/api/model"
 )
 
-func generateToken(auth model.Auth) (string, error) {
+func GenerateToken(auth model.Auth) (string, error) {
 	payload := model.JWTPayload{
 		AuthId:    auth.AuthId,
 		Username:  auth.Username,
@@ -17,8 +17,8 @@ func generateToken(auth model.Auth) (string, error) {
 		Lastname:  auth.Lastname,
 		Email:     auth.Email,
 		AuthMode:  auth.AuthMode,
-		IssuedAt:  time.Now(),
-		ExpiredAt: time.Now().Add(time.Duration(config.AppConfig.TokenExpireDuration) * time.Minute),
+		IssuedAt:  time.Now().Unix(),
+		ExpiredAt: time.Now().Add(time.Duration(config.AppConfig.TokenExpireDuration) * time.Minute).Unix(),
 	}
 
 	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, payload)

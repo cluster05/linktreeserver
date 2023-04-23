@@ -1,9 +1,8 @@
 package repository
 
 import (
-	"gorm.io/gorm"
-
 	"github.com/cluster05/linktree/api/model"
+	"gorm.io/gorm"
 )
 
 type AnalyticsRepository interface {
@@ -35,11 +34,12 @@ func (repo *analyticsRepository) CreateAnalytics(analytics model.Analytics) (boo
 
 func (repo *analyticsRepository) ReadAnalytics(user model.JWTPayload) ([]model.Analytics, error) {
 	analytics := []model.Analytics{}
+
 	result := repo.MySqlDB.Model(&model.Analytics{}).
 		Select("linkId").Where("linkId IN (?)",
-		repo.MySqlDB.Model(&model.Link{}).Select("linkId").Where("authId = ?", user.AuthId)).Find(&analytics)
+		repo.MySqlDB.Model(&model.Link{}).Select("linkId").Where("authId=?", user.AuthId)).Find(&analytics)
 	if result.Error != nil {
 		return []model.Analytics{}, result.Error
 	}
-	return []model.Analytics{}, nil
+	return analytics, nil
 }

@@ -37,8 +37,7 @@ var _ = Describe("Requesthandler", func() {
 			Expect(isValid).Should(BeFalse())
 
 			Expect(w.Body).Should(ContainSubstring("\"responseCode\":4000"))
-			Expect(w.Body).Should(ContainSubstring("\"message\":\"UNSUPPORTED_MEDIA_TYPE\""))
-			Expect(w.Body).Should(ContainSubstring("\"error\":\" only accepts Content-Type application/json\""))
+			Expect(w.Body).Should(ContainSubstring("\"data\":\" only accepts Content-Type application/json\""))
 		})
 
 		It("Pass empty value for required JSON field", func() {
@@ -63,8 +62,7 @@ var _ = Describe("Requesthandler", func() {
 			Expect(isValid).Should(BeFalse())
 
 			Expect(w.Body).Should(ContainSubstring("\"responseCode\":4000"))
-			Expect(w.Body).Should(ContainSubstring("\"message\":\"BAD_REQUEST\""))
-			Expect(w.Body).Should(ContainSubstring("\"error\":[\"field2 is required field\"]"))
+			Expect(w.Body).Should(ContainSubstring("\"data\":[\"field2 is required field\"]"))
 		})
 
 		It("Pass valid fields for required JSON field", func() {

@@ -1,6 +1,10 @@
 package model
 
-import "gorm.io/plugin/soft_delete"
+import (
+	"github.com/lithammer/shortuuid"
+	"gorm.io/gorm"
+	"gorm.io/plugin/soft_delete"
+)
 
 type AuthMode string
 
@@ -22,6 +26,12 @@ type Auth struct {
 	CreatedAt int64                 `json:"createdAt,omitempty" gorm:"column:createdAt"`
 	UpdatedAt int64                 `json:"updatedAt,omitempty" gorm:"column:updatedAt"`
 	IsDeleted soft_delete.DeletedAt `json:"isDeleted" gorm:"column:isDeleted;softDelete:flag" swaggerignore:"true"`
+}
+
+func (auth *Auth) BeforeCreate(tx *gorm.DB) error {
+	auth.AuthId = shortuuid.New()
+
+	return nil
 }
 
 type RegisterDTO struct {

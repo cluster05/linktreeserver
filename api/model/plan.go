@@ -1,5 +1,10 @@
 package model
 
+import (
+	"github.com/lithammer/shortuuid"
+	"gorm.io/gorm"
+)
+
 type PlanType string
 
 type SubscriptionType string
@@ -30,6 +35,11 @@ type Plan struct {
 	UpdatedAt        int64            `json:"updatedAt" gorm:"updatedAt"`
 	PaymentId        string           `json:"paymentId" gorm:"paymentId"`
 	ActiveStatus     bool             `json:"activeStatus" gorm:"activeStatus"`
+}
+
+func (plan *Plan) BeforeCreate(tx *gorm.DB) error {
+	plan.PlanId = shortuuid.New()
+	return nil
 }
 
 type CreatePlanDTO struct {

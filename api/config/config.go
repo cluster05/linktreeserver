@@ -28,7 +28,7 @@ type server struct {
 }
 
 type database struct {
-	MySqlDNS string `json:"MySqlDNS"`
+	MySqlDSN string `json:"mySqlDSN"`
 }
 
 type apiKey struct {

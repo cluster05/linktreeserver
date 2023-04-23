@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"gorm.io/gorm"
 
-	"github.com/lithammer/shortuuid"
-
 	"github.com/cluster05/linktree/api/model"
 	"github.com/cluster05/linktree/api/repository"
 	"github.com/cluster05/linktree/pkg/hash"
@@ -28,11 +26,11 @@ type AuthServiceConfig struct {
 }
 
 var (
-	errAccountAlreadyExists          = fmt.Errorf("account already exists with us. try to login")
-	errUsernameAlreadyExists         = fmt.Errorf("uesrname is already taken. please choose different username")
-	errorAccountNotExists            = fmt.Errorf("account not exists with us. try to register")
-	errOldAndNewPasswordCannotBeSame = fmt.Errorf("old and new password cannot be same")
-	errorInvalidCredentials          = fmt.Errorf("invalid credentails")
+	ErrAccountAlreadyExists          = fmt.Errorf("account already exists with us. try to login")
+	ErrUsernameAlreadyExists         = fmt.Errorf("uesrname is already taken. please choose different username")
+	ErrorAccountNotExists            = fmt.Errorf("account not exists with us. try to register")
+	ErrOldAndNewPasswordCannotBeSame = fmt.Errorf("old and new password cannot be same")
+	ErrorInvalidCredentials          = fmt.Errorf("invalid credentails")
 )
 
 func NewAuthService(config *AuthServiceConfig) AuthService {
@@ -45,12 +43,12 @@ func (as authService) Register(registerDTO model.RegisterDTO) (string, error) {
 
 	_, err := as.authRepository.FetchAuthByEmail(registerDTO.Email)
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
-		return "", errAccountAlreadyExists
+		return "", ErrAccountAlreadyExists
 	}
 
 	_, err = as.authRepository.FetchAuthByUsername(registerDTO.Username)
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
-		return "", errUsernameAlreadyExists
+		return "", ErrUsernameAlreadyExists
 	}
 
 	hashPassword, err := hash.CreatePasswordHash(registerDTO.Password)
@@ -59,7 +57,6 @@ func (as authService) Register(registerDTO model.RegisterDTO) (string, error) {
 	}
 
 	auth := model.Auth{
-		AuthId:    shortuuid.New(),
 		Username:  registerDTO.Username,
 		Firstname: registerDTO.Firstname,
 		Lastname:  registerDTO.Lastname,
@@ -73,7 +70,7 @@ func (as authService) Register(registerDTO model.RegisterDTO) (string, error) {
 		return "", err
 	}
 
-	jwtToken, err := generateToken(auth)
+	jwtToken, err := GenerateToken(auth)
 	if err != nil {
 		return "", err
 	}
@@ -85,14 +82,14 @@ func (as authService) Login(loginDTO model.LoginDTO) (string, error) {
 
 	auth, err := as.authRepository.FetchAuthByEmail(loginDTO.Email)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return "", errorAccountNotExists
+		return "", ErrorAccountNotExists
 	}
 
 	if valid := hash.CheckPasswordHash(loginDTO.Password, auth.Password); !valid {
-		return "", errorInvalidCredentials
+		return "", ErrorInvalidCredentials
 	}
 
-	jwtToken, err := generateToken(auth)
+	jwtToken, err := GenerateToken(auth)
 	if err != nil {
 		return "", err
 	}
@@ -103,7 +100,7 @@ func (as authService) Login(loginDTO model.LoginDTO) (string, error) {
 func (as authService) ForgotPassword(forgotPasswordDTO model.ForgotPasswordDTO) (string, error) {
 	_, err := as.authRepository.FetchAuthByEmail(forgotPasswordDTO.Email)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return "", errorAccountNotExists
+		return "", ErrorAccountNotExists
 	}
 	// TODO : send email for change password
 	return "email is send to register email id", nil
@@ -112,16 +109,16 @@ func (as authService) ForgotPassword(forgotPasswordDTO model.ForgotPasswordDTO) 
 func (as authService) ChangePassword(changePasswordDTO model.ChangePasswordDTO) (string, error) {
 
 	if changePasswordDTO.OldPassword == changePasswordDTO.NewPassword {
-		return "", errOldAndNewPasswordCannotBeSame
+		return "", ErrOldAndNewPasswordCannotBeSame
 	}
 
 	auth, err := as.authRepository.FetchAuthByEmail(changePasswordDTO.Email)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return "", errorAccountNotExists
+		return "", ErrorAccountNotExists
 	}
 
 	if valid := hash.CheckPasswordHash(changePasswordDTO.OldPassword, auth.Password); !valid {
-		return "", errorInvalidCredentials
+		return "", ErrorInvalidCredentials
 	}
 
 	hashPassword, err := hash.CreatePasswordHash(changePasswordDTO.NewPassword)
@@ -134,7 +131,7 @@ func (as authService) ChangePassword(changePasswordDTO model.ChangePasswordDTO) 
 		return "", err
 	}
 
-	jwtToken, err := generateToken(auth)
+	jwtToken, err := GenerateToken(auth)
 	if err != nil {
 		return "", err
 	}

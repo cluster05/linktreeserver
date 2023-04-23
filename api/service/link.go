@@ -2,9 +2,6 @@ package service
 
 import (
 	"errors"
-	"time"
-
-	"github.com/lithammer/shortuuid"
 	"gorm.io/gorm"
 
 	"github.com/cluster05/linktree/api/model"
@@ -35,11 +32,10 @@ func NewLinkService(config *LinkServiceConfig) LinkService {
 func (ls *linkService) CreateLink(user model.JWTPayload, createLinkDTO model.CreateLinkDTO) (model.Link, error) {
 
 	link := model.Link{
-		LinkId:   shortuuid.New(),
 		AuthId:   user.AuthId,
 		Title:    createLinkDTO.Title,
 		URL:      createLinkDTO.URL,
-		ImageUrl: createLinkDTO.URL,
+		ImageURL: createLinkDTO.URL,
 	}
 
 	return ls.linkRepository.CreateLink(link)
@@ -52,19 +48,17 @@ func (ls *linkService) ReadLink(user model.JWTPayload) ([]model.Link, error) {
 
 func (ls *linkService) UpdateLink(user model.JWTPayload, updateLinkDTO model.UpdateLinkDTO) (model.Link, error) {
 
-	findLink, err := ls.linkRepository.FindLink(user.AuthId, updateLinkDTO.LinkId)
+	_, err := ls.linkRepository.FindLink(user.AuthId, updateLinkDTO.LinkId)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return model.Link{}, gorm.ErrRecordNotFound
 	}
 
 	link := model.Link{
-		LinkId:    updateLinkDTO.LinkId,
-		AuthId:    user.AuthId,
-		Title:     updateLinkDTO.Title,
-		URL:       updateLinkDTO.URL,
-		ImageUrl:  updateLinkDTO.URL,
-		CreatedAt: findLink.CreatedAt,
-		UpdatedAt: time.Now().Unix(),
+		LinkId:   updateLinkDTO.LinkId,
+		AuthId:   user.AuthId,
+		Title:    updateLinkDTO.Title,
+		URL:      updateLinkDTO.URL,
+		ImageURL: updateLinkDTO.URL,
 	}
 	return ls.linkRepository.UpdateLink(link)
 }

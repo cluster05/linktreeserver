@@ -23,7 +23,7 @@ func GetUserAgents() map[string]struct{} {
 var UserAgentValidator validator.Func = func(fl validator.FieldLevel) bool {
 	agent, ok := fl.Field().Interface().(string)
 	if ok {
-		_, isPresent := planType[agent]
+		_, isPresent := userAgents[agent]
 		if !isPresent {
 			return false
 		}

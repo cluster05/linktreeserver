@@ -19,7 +19,7 @@ var _ = Describe("Hash", func() {
 		It("Create Password Hash", func() {
 			hashPassword, err := hash.CreatePasswordHash(samplePassword)
 			Expect(hashPassword).ShouldNot(BeEmpty())
-			Expect(err).ShouldNot(HaveOccurred())
+			Expect(err).Should(BeNil())
 		})
 
 		It("Check Password Hash", func() {

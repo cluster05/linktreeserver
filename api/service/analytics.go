@@ -3,7 +3,6 @@ package service
 import (
 	"github.com/cluster05/linktree/api/model"
 	"github.com/cluster05/linktree/api/repository"
-	"github.com/lithammer/shortuuid"
 )
 
 type AnalyticsService interface {
@@ -27,7 +26,6 @@ func NewAnalyticsService(config *AnalyticsServiceConfig) AnalyticsService {
 
 func (as *analyticsService) CreateAnalytics(createAnalyticsDTO model.CreateAnalyticsDTO) (bool, error) {
 	analytics := model.Analytics{
-		AnalyticsId:   shortuuid.New(),
 		LinkId:        createAnalyticsDTO.LinkId,
 		ContinentCode: createAnalyticsDTO.ContinentCode,
 		RegionCode:    createAnalyticsDTO.RegionCode,

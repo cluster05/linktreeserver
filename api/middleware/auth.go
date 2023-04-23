@@ -63,7 +63,7 @@ func verifyToken(reqToken string) (*model.JWTPayload, error) {
 	jwtToken, err := jwt.ParseWithClaims(reqToken, &model.JWTPayload{}, keyFunc)
 	if err != nil {
 		verr, ok := err.(*jwt.ValidationError)
-		if ok && errors.Is(verr.Inner, errExpiredToken) {
+		if ok && verr.Inner != nil {
 			return nil, errExpiredToken
 		}
 		return nil, errInvalidToken
